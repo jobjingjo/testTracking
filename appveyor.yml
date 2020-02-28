@@ -1,0 +1,18 @@
+image: Visual Studio 2019
+
+before_build:
+- nuget restore
+- choco install opencover.portable
+- choco install codecov
+
+build:
+  project: testTracking.sln
+  verbosity: minimal
+  
+environment:
+    COVERALLS_REPO_TOKEN:  
+       secure: RkuptcRPIxWwmJ5CyiZe3cX1NOEKlByNx
+
+after_test: 
+    - dotnet test ./testTracking.Core.Tests/testTracking.Core.Tests.csproj --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+    - C:\ProgramData\chocolatey\lib\codecov\tools\codecov.exe -f .\testTracking.Core.Tests\coverage.opencover.xml -t 52801315-8e86-4591-a9af-1f59b23aeab8
